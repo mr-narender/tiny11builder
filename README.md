@@ -1,122 +1,108 @@
-# tiny11builder
-*Scripts to build a trimmed-down Windows 11 image - now in **PowerShell**!*
+# Tiny11 Builder
 
-## Introduction :
-Tiny11 builder, now completely overhauled. <br> After more than a year (for which I am so sorry) of no updates, tiny11 builder is now a much more complete and flexible solution - one script fits all. Also, it is a steppingstone for an even more fleshed-out solution.
+**Build a smaller Windows 11 installer. Choose what stays.**
 
-You can now use it on ANY Windows 11 release (not just a specific build), as well as ANY language or architecture.
-This is made possible thanks to the much-improved scripting capabilities of PowerShell, compared to the older Batch release.
+Start with an official Microsoft image or your own ISO, choose the apps and
+features you want, and create your installer in a native Windows app.
+Your original source media is left unchanged.
 
-This is a script created to automate the build of a streamlined Windows 11 image, similar to tiny10.
-The script has also been updated to use DISM's recovery compression, resulting in a much smaller final ISO size, and no utilities from external sources. The only other executable included is **oscdimg.exe**, which is provided in the Windows ADK and it is used to create bootable ISO images. 
-Also included is an unattended answer file, which is used to bypass the Microsoft Account on OOBE and to deploy the image with the `/compact` flag.
-It's open-source, **so feel free to add or remove anything you want!** Feedback is also much appreciated.
+[**Download for Windows**](https://github.com/ntdevlabs/tiny11builder/releases/latest) ·
+[What's new in 0.2.0](docs/release-notes-0.2.0.md) ·
+[Watch the 0.2.0 demo](https://youtu.be/Ijp3J8SYqLc) ·
+[Get help or report a problem](https://github.com/ntdevlabs/tiny11builder/issues)
 
-Also, for the very first time, **introducing tiny11 core builder**! A more powerful script, designed for a quick and dirty development testbed. Just the bare minimum, none of the fluff. 
-This script generates a significantly reduced Windows 11 image. However, **it's not suitable for regular use due to its lack of serviceability - you can't add languages, updates, or features post-creation**. tiny11 Core is not a full Windows 11 substitute but a rapid testing or development tool, potentially useful for VM environments.
+![Tiny11 Builder: choose Tiny11, Tiny11 Core or Custom from the welcome screen](docs/images/ui-welcome.png)
 
----
+## Get started
 
-## ⚠️ Script versions:
-- **tiny11maker.ps1** : The regular script, which removes a lot of bloat but keeps the system serviceable. You can add languages, updates, and features post-creation. This is the recommended script for regular use.
-- ⚠️ **tiny11coremaker.ps1** : The core script, which removes even more bloat but also removes the ability to service the image. You cannot add languages, updates, or features post-creation. This is recommended for quick testing or development use.
+1. **Download and extract the whole ZIP.** Choose **x64** for Intel/AMD PCs or
+   **ARM64** for Windows on ARM.
+2. **Open `Tiny11Builder.exe`.** Approve the administrator prompt.
+3. **Choose your Windows image and what to keep.** Download an official image
+   in the app or select your own, review your choices, then build your ISO.
 
-## Instructions:
-1. Download Windows 11 from the [Microsoft website](https://www.microsoft.com/software-download/windows11) or [Rufus](https://github.com/pbatard/rufus)
-2. Mount the downloaded ISO image using Windows Explorer.
-3. Open **PowerShell 5.1** as Administrator. 
-5. Change the script execution policy :
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process
-```
-> Using `-Scope Process` you keep your original policy intact as this change only lasts for the current PowerShell session. 
+The app includes its .NET runtime. For image-tool requirements and a full
+walkthrough, see the [usage guide](docs/usage.md).
 
-6. Start the script :
-```powershell
-C:/path/to/your/tiny11/script.ps1 -ISO <letter> -SCRATCH <letter>
-``` 
-> You can see of the script by running the `get-help` command.
+## Pick a starting point
 
-6. Select the drive letter where the image is mounted (only the letter, no colon (:))
-7. Select the SKU that you want the image to be based.
-8. Sit back and relax :)
-9. When the image is completed, you will see it in the folder where the script was extracted, with the name tiny11.iso
+| Choose | When it fits |
+| --- | --- |
+| **Tiny11** | A leaner image that keeps Windows Update, Defender and recovery. |
+| **Custom** | Choose removals yourself, or load a recipe and adjust it to your needs. |
+| **Tiny11 Core** | Disposable test VMs. Removes update and recovery support and disables Defender. |
 
----
+> **Try your image in a virtual machine first.** Core cannot be updated or
+> serviced. Advanced Custom removals can break Windows, apps or devices.
 
-## What is removed:
-<table>
-  <tbody>
-    <tr>
-      <th>Tiny11maker</th>
-      <th>Tiny11coremaker</th>
-    </tr>
-    <tr>
-      <td>
-        <ul>
-          <li>Clipchamp</li>
-          <li>News</li>
-          <li>Weather</li>
-          <li>Xbox</li>
-          <li>GetHelp</li>
-          <li>GetStarted</li>
-          <li>Office Hub</li>
-          <li>Solitaire</li>
-          <li>PeopleApp</li>
-          <li>PowerAutomate</li>
-          <li>ToDo</li>
-          <li>Alarms</li>
-          <li>Mail and Calendar</li>
-          <li>Feedback Hub</li>
-          <li>Maps</li>
-          <li>Sound Recorder</li>
-          <li>Your Phone</li>
-          <li>Media Player</li>
-          <li>QuickAssist</li>
-          <li>Internet Explorer</li>
-          <li>Tablet PC Math</li>
-          <li>Edge</li>
-          <li>OneDrive</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li>all from regular tiny +</li>
-          <li>Windows Component Store (WinSxS)</li>
-          <li>Windows Defender (only disabled, can be enabled back if needed)</li>
-          <li>Windows Update (wouldn't work without WinSxS, enabling it would put the system in a state of failure)</li>
-          <li>WinRE</li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+## More control in 0.2.0
 
-Keep in mind that **you cannot add back features in tiny11 core**! <br>
-You will be asked during image creation if you want to enable .net 3.5 support!
+- **Reuse a setup you like.** Load a recipe, review its selected removals,
+  and adapt it to another Windows image.
+- **Know what will change.** Browse the Tiny11 and Core removal plans, or
+  export a complete list of components for a closer look.
+- **Bring updates along.** Add local Windows update packages before building,
+  in the order your image needs.
+- **Use your language.** English and Simplified Chinese are included.
+  Additional languages can use [translation files](docs/translation.md).
+- **Go further with Custom.** Fine-tune individual removals and create a
+  smaller installer from your own Windows image.
 
----
+Turbo mode speeds up processing. Interrupted builds can resume once a saved
+image checkpoint is available.
 
-## Known issues:
-- Although Edge is removed, there are some remnants in the Settings, but the app in itself is deleted. 
-- You might have to update Winget before being able to install any apps, using Microsoft Store.
-- Outlook and Dev Home might reappear after some time. This is an ongoing battle, though the latest script update tries to prevent this more aggressively.
-- If you are using this script on arm64, you might see a glimpse of an error while running the script. This is caused by the fact that the arm64 image doesn't have OneDriveSetup.exe included in the System32 folder.
+[Read the full 0.2.0 release notes](docs/release-notes-0.2.0.md)
+
+## Watch what's new
+
+[![Watch the Tiny11 Builder 0.2.0 showcase on YouTube](docs/images/video-0.2.0.jpg)](https://youtu.be/Ijp3J8SYqLc)
+
+## A look inside
+
+| See what a preset removes | Check your build before starting |
+| --- | --- |
+| ![Tiny11 preset details and its removal plan](docs/images/ui-presets.png) | ![Review of the selected Windows image, output and build options](docs/images/ui-review.png) |
+
+## Compatibility and advanced use
+
+Windows 11 images from **22H2 onward** are supported. Insider and Canary builds
+need compatible Microsoft image tools; Windows Server is not supported.
+See [requirements and compatibility](docs/usage.md) before choosing a source.
+
+<details>
+<summary>Looking for deeper customization or a very small image?</summary>
+
+Custom includes individual app, component, service, file, driver and font
+removals, plus optional installer cleanup.
+
+The bundled [extreme recipe](recipes/cd700-custom.json) is a starting point
+for experimenting with much smaller images, not another build mode.
+CD size is an optional target, not a guarantee for every Windows image.
+Test the result in an isolated virtual machine.
+
+See the [usage guide](docs/usage.md) for the controls and their tradeoffs.
+
+</details>
+
+## Help keep the next update coming
+
+Tiny11 Builder grows through testing and feedback from people using it.
+If it saves you time, a contribution helps fund development, testing across
+Windows releases, and fixes for real-world problems.
+
+**[Sponsor monthly](https://github.com/sponsors/ntdevlabs)** ·
+**[Send a one-time thanks](https://ko-fi.com/ntdev)**
+
+You can also use [Patreon](https://www.patreon.com/ntdev) or
+[PayPal](https://paypal.me/ntdev2).
+
+**Every feature is free, whether you donate or not.** Clear bug reports,
+testing in a VM, and sharing the [demo](https://youtu.be/Ijp3J8SYqLc) help too.
 
 ---
 
-## Features to be implemented:
-- ~~disabling telemetry~~ (Implemented in the 04-29-24 release!)
-- ~~more ad suppression~~ (Partially implemented in the 09-06-25 release!)
-- improved language and arch detection
-- more flexibility in what to keep and what to delete
-- maybe a GUI???
+[Usage and build instructions](docs/usage.md) ·
+[Translation guide](docs/translation.md) ·
+[Attribution and distribution notices](NOTICE.md)
 
-And that's pretty much it for now!
-## ❤️ Support the Project
-
-If this project has helped you, please consider showing your support! A small donation helps me dedicate more time to projects like this.
-Thank you!
-
-**[Patreon](http://patreon.com/ntdev) | [PayPal](http://paypal.me/ntdev2) | [Ko-fi](http://ko-fi.com/ntdev)**
-Thanks for trying it and let me know how you like it!
+The original PowerShell builders remain in this repository.

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
+    <PackageReference Include="xunit" Version="2.9.2"/>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all"/>
+    <ProjectReference Include="..\..\src\Tiny11Builder.Core\Tiny11Builder.Core.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- WinUI-free app logic, compiled as-is so the tests run the shipped code. -->
+    <Compile Include="..\..\src\Tiny11Builder.App\Choices.cs" Link="AppLogic\Choices.cs"/>
+    <Compile Include="..\..\src\Tiny11Builder.App\OperationFlow.cs" Link="AppLogic\OperationFlow.cs"/>
+    <Compile Include="..\..\src\Tiny11Builder.App\ProjectSupport.cs" Link="AppLogic\ProjectSupport.cs"/>
+    <None Include="..\..\src\Tiny11Builder.App\MainWindow.xaml" Link="Deployment\MainWindow.xaml" CopyToOutputDirectory="PreserveNewest"/>
+    <None Include="..\..\src\Tiny11Builder.App\app.manifest" Link="Deployment\app.manifest" CopyToOutputDirectory="PreserveNewest"/>
+    <None Include="..\..\recipes\*.json" Link="Recipes\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\Tiny11Builder.App\Localization.cs" Link="AppLogic\Localization.cs"/>
+    <Compile Include="..\..\src\Tiny11Builder.App\UiRefinements.cs" Link="AppLogic\UiRefinements.cs"/>
+    <EmbeddedResource Include="..\..\src\Tiny11Builder.App\Languages\en.json" LogicalName="Tiny11Builder.App.Languages.en.json"/>
+    <None Include="..\..\src\Tiny11Builder.App\Languages\*.json" Link="Languages\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
+</Project>
